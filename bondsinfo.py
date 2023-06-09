@@ -1,5 +1,6 @@
 import requests
 import csv
+import re
 from datetime import datetime
 
 
@@ -46,12 +47,24 @@ backup = [{"bond_id":'123128',"backup":'下修或可低于净资产'},
           {"bond_id":'127075',"backup":'[打电话]说不下修'},
           {"bond_id":'123103',"backup":'[打电话]说不下修'},
           {"bond_id":'123096',"backup":'公司财务不健康，不要上头'},
+          {"bond_id":'123004',"backup":'快到期了'},
+          {"bond_id":'123049',"backup":'每股净资产4.89'},
+          {"bond_id":'123010',"backup":'只有5个月了,每股净资产5.62'},
+          {"bond_id":'113569',"backup":'亏损股'},
+          {"bond_id":'113017',"backup":'每股净资产2.03,半年到期'},
+          {"bond_id":'127016',"backup":'每股净资产10.17'},
+          {"bond_id":'113066',"backup":'每股净资产9.7'},
+          {"bond_id":'110070',"backup":'每股净资产2.86'},
+          #{"bond_id":'127016',"backup":'每股净资产10.17'},
           {"bond_id":'128021',"backup":' 只有半年时间了，谨慎一点'}
           ]
 
+#写头文件
 with open(csv_file, 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(heaser)
+
+#写具体数据
 #转债名称 bond_nm
 #转债代码 bond_id
 #转债价格 price
@@ -72,6 +85,49 @@ for bond_code in bond_code_array:
       writer.writerow(item)
     #table_data.append(item)
 
+
+
+#辅助函数
+def parse_adjust_string(s):
+    if(s == None):
+        return None
+    pattern = r"([\d]+)/([\d]+) \| ([\d]+)"
+    match_obj = re.match(pattern, s)
+    if match_obj:
+        num1, num2, num3 = map(int, match_obj.groups())
+        return num1, num2, num3
+    else:
+        return None
+
+#筛选待下修转债
+adjust_list_file = current_date.strftime("带下修转债列表-%Y年%m月%d日.csv")
+#写头文件
+with open(adjust_list_file, 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(heaser)
+
+
+for bond_data in all_bonds_data:
+    bond_code = bond_data["bond_id"]
+    adjust_count = find_property_value(all_bonds_data,bond_code, 'adjust_count')
+    adjust = parse_adjust_string(adjust_count)
+    if adjust == None:
+        continue
+    if adjust[0] == 0:
+        continue
+    if adjust[0] > 15:
+        continue
+    bond_nm = find_property_value(all_bonds_data,bond_code, 'bond_nm')
+    bond_id = find_property_value(all_bonds_data,bond_code, 'bond_id')
+    price = find_property_value(all_bonds_data,bond_code, 'price')
+    premium_rt = find_property_value(all_bonds_data,bond_code, 'premium_rt')
+    premium_rt_str =  str(premium_rt) + '%'
+    readjust_dt = find_property_value(all_bonds_data,bond_code, 'readjust_dt')
+    bond_backup = find_backup_by_bond_id(bond_id,backup)
+    item = [bond_nm,bond_id,price,premium_rt_str,adjust_count,readjust_dt,bond_backup]
+    with open(adjust_list_file, 'a', newline='') as file:
+      writer = csv.writer(file)
+      writer.writerow(item)
 
 
 #with open(csv_file, 'a', newline='') as file:
