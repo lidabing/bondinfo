@@ -99,9 +99,9 @@ sheet['A1'] = '即将下修转债列表'
 sheet['A1'].font = title_font
 sheet.row_dimensions[1].height = 22
 sheet.column_dimensions['A'].width = 12
-sheet.column_dimensions['E'].width = 16
-sheet.column_dimensions['F'].width = 16
-sheet.column_dimensions['G'].width = 25
+sheet.column_dimensions['E'].width = 14
+sheet.column_dimensions['F'].width = 14
+sheet.column_dimensions['G'].width = 20
 
 sheet.append(excel_header)
 for cell in sheet[2]:
@@ -121,6 +121,7 @@ for bond_data in all_bonds_data:
         continue
     if adjust[0] > 15:
         continue
+    index = index + 1
     bond_nm = find_property_value(all_bonds_data,bond_code, 'bond_nm')
     bond_id = find_property_value(all_bonds_data,bond_code, 'bond_id')
     #bond_id = int(bond_id)
@@ -132,6 +133,13 @@ for bond_data in all_bonds_data:
     bond_backup = find_content_by_id(bond_id)
     item = [bond_nm,int(bond_id),price,premium_rt,adjust_count,readjust_dt,bond_backup]
     sheet.append(item)
+    #如果只剩下3天了，那么标红，做醒目处理
+    blue_font  = Font(color='FF4500')  # 蓝色字体
+    if adjust[1]-adjust[0]<4:
+        pos = 'E'+str(index)
+        sheet[pos].font = blue_font
+
+
     
 
 #设置百分比
@@ -149,7 +157,7 @@ for cell in sheet['B']:
         cell.font = blue_font
 
 #设置居中
-for row in sheet.iter_rows(min_row=1, max_row=100, min_col=1, max_col=8):
+for row in sheet.iter_rows(min_row=1, max_row=100, min_col=1, max_col=7):
     for cell in row:
         cell.alignment = Alignment(horizontal='center', vertical='center')
 # 保存工作簿
