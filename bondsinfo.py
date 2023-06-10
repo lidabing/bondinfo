@@ -2,9 +2,24 @@ import requests
 import csv
 import re
 from datetime import datetime
+from openpyxl import Workbook
+from openpyxl.styles import Font, Color
+from openpyxl.styles import Alignment
+from openpyxl.styles import PatternFill
 
 
 headers = {"cookie": 'kbzw__Session=elbqk07dap4k0uqf4o5k6retg2; Hm_lvt_164fe01b1433a19b507595a43bf58262=1685855555; kbz_newcookie=1; kbzw__user_login=7Obd08_P1ebax9aXYOkFRiQHWB34VekdmrCW6c3q1e3Q6dvR1YzRl6iwrsqyzqmW18Sr2KjalaOXqbGooNrP3Mitltqpq5mcndbd3dPGpKWplKiXmLKgubXOvp-qq6GupKyXrZiomK6ltrG_0aTC2PPV487XkKylo5iJx8ri3eTg7IzFtpaSp6Wjs4HHyuKvqaSZ5K2Wn4G45-PkxsfG1sTe3aihqpmklK2Xm8OpxK7ApZXV4tfcgr3G2uLioYGzyebo4s6onaiVpJGlp6GogcPC2trn0qihqpmklK0.; Hm_lpvt_164fe01b1433a19b507595a43bf58262=1685884076'}
+
+
+def find_content_by_id(target_id):
+    with open('backup.txt', 'r', encoding='utf-8') as file:
+        for line in file:
+            line = line.strip()
+            if line.startswith(target_id):
+                content = line.split('|', 1)[-1].strip()
+                return content
+    return None
+
 
 def fetch_all_convertible_bonds():
     url = "https://www.jisilu.cn/webapi/cb/adjust/"
@@ -41,7 +56,7 @@ date_string = current_date.strftime("%Y年%m月%d日.csv")
 csv_file = date_string
 
 
-heaser =   ['转债名称','转债代码','转债价格','转债溢价率','下修日计数','下修重算起始日','备注']
+heaser =   ['转债名称','转债代码','收盘价','溢价率','下修日计数','下修重算起始日','备注']
 backup = [{"bond_id":'123128',"backup":'下修或可低于净资产'},
           {"bond_id":'127075',"backup":'[打电话]说不下修'},
           {"bond_id":'127075',"backup":'[打电话]说不下修'},
@@ -71,6 +86,7 @@ with open(csv_file, 'w', newline='') as file:
 #转债溢价率 premium_rt
 #下修天计数 adjust_count
 #下修重算起始日 readjust_dt
+
 for bond_code in bond_code_array:
     bond_nm = find_property_value(all_bonds_data,bond_code, 'bond_nm')
     bond_id = find_property_value(all_bonds_data,bond_code, 'bond_id')
@@ -101,15 +117,19 @@ def parse_adjust_string(s):
 
 #筛选待下修转债
 adjust_list_file = current_date.strftime("带下修转债列表-%Y年%m月%d日.csv")
+
 #写头文件
-with open(adjust_list_file, 'w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow(heaser)
+#with open(adjust_list_file, 'w', newline='') as file:
+#    writer = csv.writer(file)
+#    writer.writerow(heaser)
+
 
 
 for bond_data in all_bonds_data:
     bond_code = bond_data["bond_id"]
     adjust_count = find_property_value(all_bonds_data,bond_code, 'adjust_count')
+    print(bond_code)
+    print(adjust_count)
     adjust = parse_adjust_string(adjust_count)
     if adjust == None:
         continue
@@ -123,11 +143,13 @@ for bond_data in all_bonds_data:
     premium_rt = find_property_value(all_bonds_data,bond_code, 'premium_rt')
     premium_rt_str =  str(premium_rt) + '%'
     readjust_dt = find_property_value(all_bonds_data,bond_code, 'readjust_dt')
-    bond_backup = find_backup_by_bond_id(bond_id,backup)
+    bond_backup = find_content_by_id(bond_id)
     item = [bond_nm,bond_id,price,premium_rt_str,adjust_count,readjust_dt,bond_backup]
-    with open(adjust_list_file, 'a', newline='') as file:
-      writer = csv.writer(file)
-      writer.writerow(item)
+    
+
+    #with open(adjust_list_file, 'a', newline='') as file:
+    #  writer = csv.writer(file)
+    #  writer.writerow(item)
 
 
 #with open(csv_file, 'a', newline='') as file:
