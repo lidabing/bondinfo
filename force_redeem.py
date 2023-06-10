@@ -2,12 +2,13 @@ import requests
 import json
 from openpyxl import Workbook
 from openpyxl.styles import Font, Color
-from openpyxl.styles import Alignment, NamedStyle
+from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
-from openpyxl.styles import numbers
+
 
 from enum import Enum
 import re
+from datetime import datetime
 
 
 # 获取一些常用属性
