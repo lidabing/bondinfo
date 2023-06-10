@@ -4,10 +4,38 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Color
 from openpyxl.styles import Alignment, NamedStyle
 from openpyxl.styles import PatternFill
+from openpyxl.styles import numbers
 
 from enum import Enum
 import re
 
+
+# 获取一些常用属性
+headers = {"cookie": 'kbzw__Session=elbqk07dap4k0uqf4o5k6retg2; Hm_lvt_164fe01b1433a19b507595a43bf58262=1685855555; kbz_newcookie=1; kbzw__user_login=7Obd08_P1ebax9aXYOkFRiQHWB34VekdmrCW6c3q1e3Q6dvR1YzRl6iwrsqyzqmW18Sr2KjalaOXqbGooNrP3Mitltqpq5mcndbd3dPGpKWplKiXmLKgubXOvp-qq6GupKyXrZiomK6ltrG_0aTC2PPV487XkKylo5iJx8ri3eTg7IzFtpaSp6Wjs4HHyuKvqaSZ5K2Wn4G45-PkxsfG1sTe3aihqpmklK2Xm8OpxK7ApZXV4tfcgr3G2uLioYGzyebo4s6onaiVpJGlp6GogcPC2trn0qihqpmklK0.; Hm_lpvt_164fe01b1433a19b507595a43bf58262=1685884076'}
+def fetch_all_convertible_bonds():
+    url = "https://www.jisilu.cn/webapi/cb/adjust/"
+
+    # 发起 HTTP GET 请求
+    response = requests.get(url,headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+        return data.get("data", [])
+    else:
+        print(f"请求失败，状态码: {response.status_code}")
+        return []
+
+def find_property_value(data, bond_id, property_name):
+    for bond_data in data:
+        if bond_data["bond_id"] == bond_id:
+            return bond_data.get(property_name)
+    return None
+
+### 通用的转债数据，在这里，主要用来获取溢价率的
+all_bonds_data = fetch_all_convertible_bonds()
+
+
+##################################################################
 class RedeemStatus(Enum):
     NOT_REDEEM_CONDITION = 0  # 未满足强赎条件
     REDEEM_CONDITION = 1  # 满足强赎条件
@@ -29,8 +57,8 @@ def get_redeem_status(string):
         return RedeemStatus.NOT_REDEEM_CONDITION #还没有达到强赎条件
 
 def separate_numbers(string):
-    numbers = re.findall(r'\d+', string)
-    return numbers
+    number = re.findall(r'\d+', string)
+    return number
 
 def is_integer(variable):
     if isinstance(variable, int):
@@ -39,6 +67,9 @@ def is_integer(variable):
         return variable.isdigit()
     else:
         return False
+
+def is_number(value):
+    return isinstance(value, (int, float, complex))
 
 url = "https://www.jisilu.cn/webapi/cb/redeem/"
 
@@ -70,45 +101,29 @@ if response.status_code == 200:
     for item in json_data['data']:
         redeem_status = item["redeem_status"]
         status = get_redeem_status(redeem_status)
+        premium_rt = find_property_value(all_bonds_data,item["bond_id"],'premium_rt')
+        premium_rt = premium_rt/100.00
+        #premium_rt = str(premium_rt) + '%'
         if status == RedeemStatus.NOT_REDEEM_CONDITION:  
-            numbers = separate_numbers(redeem_status)
-            compliance_days = int(numbers[0])#numbers[1]-numbers[0]
+            number = separate_numbers(redeem_status)
+            compliance_days = int(number[0])#numbers[1]-numbers[0]
             if compliance_days>5:
                 print("即将达到强赎条件")
-                cache = [item["bond_nm"],int(item["bond_id"]),item["price"],item["redeem_price"],item["curr_iss_amt"],redeem_status]
-                not_redeem_condition.append(cache)
-                print("债券名称:", item["bond_nm"])
-                print("债券代码:", int(item["bond_id"]))
-                print("收盘价:", item["redeem_price"])
-                print("溢价率:", item["redeem_price_ratio"])
-                print("剩余规模:", item["curr_iss_amt"])
-                print("达标天数:", redeem_status)
-                print("-----------------------------")              
+                cache = [item["bond_nm"],int(item["bond_id"]),item["price"],premium_rt,item["curr_iss_amt"],redeem_status]
+                not_redeem_condition.append(cache)            
         elif status == RedeemStatus.REDEEM_CONDITION:
-            cache = [item["bond_nm"],int(item["bond_id"]),item["price"],item["redeem_price"],item["curr_iss_amt"],redeem_status]
+            cache = [item["bond_nm"],int(item["bond_id"]),item["price"],premium_rt,item["curr_iss_amt"],redeem_status]
             redeem_condition.append(cache)
 
         elif status == RedeemStatus.REDEEM_NOTICE:
             print("发出强赎公告")
-            cache = [item["bond_nm"],int(item["bond_id"]),item["price"],item["redeem_price_ratio"],item["delist_dt"],item["last_convert_dt"]]
+            cache = [item["bond_nm"],int(item["bond_id"]),item["price"],premium_rt,item["delist_dt"],item["last_convert_dt"]]
             redeem_notice.append(cache)
-            print("债券名称:", item["bond_nm"])
-            print("债券代码:", int(item["bond_id"]))
-            print("收盘价:", item["redeem_price"])
-            print("溢价率:", item["redeem_price_ratio"])
-            print("最后交易日:", item["delist_dt"])
-            print("最后转股日:", item["last_convert_dt"])
-            print("-----------------------------")
         elif status == RedeemStatus.EXPIRING_BOND:
             print("转债即将到期")
-            cache = [item["bond_nm"],int(item["bond_id"]),item["price"],item["redeem_price_ratio"],item["delist_dt"],item["last_convert_dt"]]
+            cache = [item["bond_nm"],int(item["bond_id"]),item["price"],premium_rt,item["delist_dt"],item["last_convert_dt"]]
             expriry_bond.append(cache)
-            print("债券名称:", item["bond_nm"])
-            print("债券代码:", int(item["bond_id"]))
-            print("收盘价:", item["redeem_price"])
-            print("溢价率:", item["redeem_price_ratio"])
-            print("最后交易日:", item["delist_dt"])
-            print("最后转股日:", item["last_convert_dt"])
+         
 
         #print("债券ID:", item["bond_id"])
         #print("债券名称:", item["bond_nm"])
@@ -236,6 +251,15 @@ if response.status_code == 200:
         if(is_integer(sheet[pos].value)):
             cell.font = blue_font
 
+    #设置百分比
+    for cell in sheet['D']:
+        pos = 'D'+str(cell.row)
+        print(sheet[pos].value)
+        if(is_number(sheet[pos].value)):
+            cell.number_format = '0.00%'
+
+
+    #设置居中
     for row in sheet.iter_rows(min_row=1, max_row=20, min_col=1, max_col=7):
          for cell in row:
              cell.alignment = Alignment(horizontal='center', vertical='center')
