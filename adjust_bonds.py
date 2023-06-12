@@ -121,11 +121,17 @@ for bond_data in all_bonds_data:
         continue
     if adjust[0] > 15:
         continue
+
+    #再判断收盘价，如果收盘价高于122，就不统计了
+    price = find_property_value(all_bonds_data,bond_code, 'price')
+    if price>120:
+        continue
+
     index = index + 1
     bond_nm = find_property_value(all_bonds_data,bond_code, 'bond_nm')
     bond_id = find_property_value(all_bonds_data,bond_code, 'bond_id')
     #bond_id = int(bond_id)
-    price = find_property_value(all_bonds_data,bond_code, 'price')
+    #price = find_property_value(all_bonds_data,bond_code, 'price')
     premium_rt = find_property_value(all_bonds_data,bond_code, 'premium_rt')
     premium_rt = premium_rt/100.00
     #premium_rt_str =  str(premium_rt) + '%'

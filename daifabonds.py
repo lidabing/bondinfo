@@ -8,6 +8,13 @@ from openpyxl.styles import Font, Color
 from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
 
+def compare_dates(date1_str, date2_str):
+    # 将日期字符串转换为日期对象
+    date1 = datetime.strptime(date1_str, '%Y-%m-%d').date()
+    date2 = datetime.strptime(date2_str, '%Y-%m-%d').date()
+
+    return date1 >= date2
+
 def is_integer(variable):
     if isinstance(variable, int):
         return True
@@ -104,7 +111,8 @@ for cell in sheet[2]:
 # 检查请求是否成功
 for bond_data in all_bonds_data:
     record_dt = bond_data["record_dt"]
-    if extract_date_info(record_dt) != None:
+    apply_date = bond_data["apply_date"]
+    if extract_date_info(record_dt) != None and compare_dates(apply_date,'2023-06-13'):
         print(record_dt)
         bond_nm = bond_data["bond_nm"]
         bond_id = int(bond_data["bond_id"])
