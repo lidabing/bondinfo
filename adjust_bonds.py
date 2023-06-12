@@ -83,7 +83,7 @@ def is_integer(variable):
 all_bonds_data = fetch_all_convertible_bonds()
 
 
-excel_header =   ['转债名称','转债代码','收盘价','溢价率','下修日计数','下修重算起始日','备注']
+excel_header =   ['转债名称','转债代码','收盘价','溢价率','下修日计数','备注']
 # 创建字体对象
 title_font = Font(name='楷体')
 header_font = Font(name='宋体',bold=True)
@@ -94,7 +94,7 @@ header_fill = PatternFill(fill_type='solid', fgColor='f2f2f2')
 # 创建一个新的工作簿
 workbook = Workbook()
 sheet = workbook.active
-sheet.merge_cells('A1:G1')
+sheet.merge_cells('A1:F1')
 sheet['A1'] = '即将下修转债列表'
 sheet['A1'].font = title_font
 sheet.row_dimensions[1].height = 22
@@ -131,7 +131,7 @@ for bond_data in all_bonds_data:
     #premium_rt_str =  str(premium_rt) + '%'
     readjust_dt = find_property_value(all_bonds_data,bond_code, 'readjust_dt')
     bond_backup = find_content_by_id(bond_id)
-    item = [bond_nm,int(bond_id),price,premium_rt,adjust_count,readjust_dt,bond_backup]
+    item = [bond_nm,int(bond_id),price,premium_rt,adjust_count,bond_backup]
     sheet.append(item)
     #如果只剩下3天了，那么标红，做醒目处理
     blue_font  = Font(color='FF4500')  # 蓝色字体
@@ -157,7 +157,7 @@ for cell in sheet['B']:
         cell.font = blue_font
 
 #设置居中
-for row in sheet.iter_rows(min_row=1, max_row=100, min_col=1, max_col=7):
+for row in sheet.iter_rows(min_row=1, max_row=80, min_col=1, max_col=6):
     for cell in row:
         cell.alignment = Alignment(horizontal='center', vertical='center')
 # 保存工作簿
