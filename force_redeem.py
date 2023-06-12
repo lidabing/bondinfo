@@ -261,7 +261,7 @@ if response.status_code == 200:
 
 
     #设置居中
-    for row in sheet.iter_rows(min_row=1, max_row=20, min_col=1, max_col=7):
+    for row in sheet.iter_rows(min_row=1, max_row=19, min_col=1, max_col=6):
          for cell in row:
              cell.alignment = Alignment(horizontal='center', vertical='center')
 
