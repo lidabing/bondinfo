@@ -87,6 +87,7 @@ excel_header =   ['转债名称','转债代码','收盘价','溢价率','下修�
 # 创建字体对象
 title_font = Font(name='楷体')
 header_font = Font(name='宋体',bold=True)
+backup_font = Font(name='楷体',size=9)
 title_height = 30
 header_fill = PatternFill(fill_type='solid', fgColor='f2f2f2')
 
@@ -113,7 +114,8 @@ for bond_data in all_bonds_data:
     bond_code = bond_data["bond_id"]
     adjust_count = find_property_value(all_bonds_data,bond_code, 'adjust_count')
     print(bond_code)
-    print(adjust_count)
+    print(bond_data)
+    #print(adjust_count)
     adjust = parse_adjust_string(adjust_count)
     if adjust == None:
         continue
@@ -124,7 +126,7 @@ for bond_data in all_bonds_data:
 
     #再判断收盘价，如果收盘价高于122，就不统计了
     price = find_property_value(all_bonds_data,bond_code, 'price')
-    if price>120:
+    if price>122:
         continue
 
     index = index + 1
@@ -162,10 +164,19 @@ for cell in sheet['B']:
     if(is_integer(sheet[pos].value)):
         cell.font = blue_font
 
+#设置备注文字样式
+for cell in sheet['F']:
+    pos = 'F'+str(cell.row)
+    sheet[pos].font = backup_font
+    #sheet[pos].alignment = Alignment(wrap_text=True)
+             
+    
+
 #设置居中
-for row in sheet.iter_rows(min_row=1, max_row=80, min_col=1, max_col=6):
+# TOdo自动调整宽度
+for row in sheet.iter_rows(min_row=1, max_row=44, min_col=1, max_col=6):
     for cell in row:
-        cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.alignment = Alignment(horizontal='center', vertical='center',wrap_text=True)
 # 保存工作簿
 adjust_list_file = datetime.now().strftime("即将下修转债列表-%Y年%m月%d日.xlsx")
 workbook.save(adjust_list_file)

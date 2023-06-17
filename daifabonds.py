@@ -112,7 +112,7 @@ for cell in sheet[2]:
 for bond_data in all_bonds_data:
     record_dt = bond_data["record_dt"]
     apply_date = bond_data["apply_date"]
-    if extract_date_info(record_dt) != None and compare_dates(apply_date,'2023-06-13'):
+    if extract_date_info(record_dt) != None and compare_dates(apply_date,'2023-06-15'):
         print(record_dt)
         bond_nm = bond_data["bond_nm"]
         bond_id = int(bond_data["bond_id"])
@@ -128,7 +128,7 @@ for bond_data in all_bonds_data:
 
 
 #设置居中
-for row in sheet.iter_rows(min_row=1, max_row=10, min_col=1, max_col=9):
+for row in sheet.iter_rows(min_row=1, max_row=3, min_col=1, max_col=9):
     for cell in row:
         cell.alignment = Alignment(horizontal='center', vertical='center')
 
