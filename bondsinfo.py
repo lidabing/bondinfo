@@ -57,22 +57,6 @@ csv_file = date_string
 
 
 heaser =   ['转债名称','转债代码','收盘价','溢价率','下修日计数','下修重算起始日','备注']
-backup = [{"bond_id":'123128',"backup":'下修或可低于净资产'},
-          {"bond_id":'127075',"backup":'[打电话]说不下修'},
-          {"bond_id":'127075',"backup":'[打电话]说不下修'},
-          {"bond_id":'123103',"backup":'[打电话]说不下修'},
-          {"bond_id":'123096',"backup":'公司财务不健康，不要上头'},
-          {"bond_id":'123004',"backup":'快到期了'},
-          {"bond_id":'123049',"backup":'每股净资产4.89'},
-          {"bond_id":'123010',"backup":'只有5个月了,每股净资产5.62'},
-          {"bond_id":'113569',"backup":'亏损股'},
-          {"bond_id":'113017',"backup":'每股净资产2.03,半年到期'},
-          {"bond_id":'127016',"backup":'每股净资产10.17'},
-          {"bond_id":'113066',"backup":'每股净资产9.7'},
-          {"bond_id":'110070',"backup":'每股净资产2.86'},
-          #{"bond_id":'127016',"backup":'每股净资产10.17'},
-          {"bond_id":'128021',"backup":' 只有半年时间了，谨慎一点'}
-          ]
 
 #写头文件
 with open(csv_file, 'w', newline='') as file:
@@ -94,7 +78,7 @@ for bond_code in bond_code_array:
     premium_rt = find_property_value(all_bonds_data,bond_code, 'premium_rt')
     adjust_count = find_property_value(all_bonds_data,bond_code, 'adjust_count')
     readjust_dt = find_property_value(all_bonds_data,bond_code, 'readjust_dt')
-    bond_backup = find_backup_by_bond_id(bond_id,backup)
+    #bond_backup = find_backup_by_bond_id(bond_id,backup)
     item = [bond_nm,bond_id,price,premium_rt,adjust_count,readjust_dt,bond_backup]
     with open(csv_file, 'a', newline='') as file:
       writer = csv.writer(file)

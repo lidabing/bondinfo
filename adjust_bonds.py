@@ -1,5 +1,4 @@
 import requests
-import csv
 import re
 import json
 from datetime import datetime
@@ -86,8 +85,8 @@ all_bonds_data = fetch_all_convertible_bonds()
 excel_header =   ['转债名称','转债代码','收盘价','溢价率','下修日计数','备注']
 # 创建字体对象
 title_font = Font(name='楷体')
-header_font = Font(name='宋体',bold=True)
-backup_font = Font(name='楷体',size=9)
+header_font = Font(name='微软雅黑',bold=False)
+backup_font = Font(name='微软雅黑',size=9)
 title_height = 30
 header_fill = PatternFill(fill_type='solid', fgColor='f2f2f2')
 
@@ -142,10 +141,10 @@ for bond_data in all_bonds_data:
     item = [bond_nm,int(bond_id),price,premium_rt,adjust_count,bond_backup]
     sheet.append(item)
     #如果只剩下3天了，那么标红，做醒目处理
-    blue_font  = Font(color='FF4500')  # 蓝色字体
+    red_font  = Font(color='FF4500')  
     if adjust[1]-adjust[0]<4:
         pos = 'E'+str(index)
-        sheet[pos].font = blue_font
+        sheet[pos].font = red_font
 
 
     
@@ -163,6 +162,13 @@ for cell in sheet['B']:
     print(sheet[pos].value)
     if(is_integer(sheet[pos].value)):
         cell.font = blue_font
+
+yahei_font  = Font(name='微软雅黑',bold=False)
+for cell in sheet['A']:
+    pos = 'A'+str(cell.row)
+    #print(sheet[pos].value)
+    #if(is_integer(sheet[pos].value)):
+    cell.font = yahei_font
 
 #设置备注文字样式
 for cell in sheet['F']:

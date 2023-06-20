@@ -140,14 +140,14 @@ if response.status_code == 200:
     header_fill = PatternFill(fill_type='solid', fgColor='f2f2f2')
     sheet = workbook.active
     # 创建一个字体对象并设置为默认字体
-    default_font = Font(name='宋体',bold=True)
+    default_font = Font(name='微软雅黑',bold=False)
     # 将默认字体应用于工作表
     sheet.font = default_font
     sheet.default_font = default_font
 
     # 创建字体对象
     title_font = Font(name='楷体')
-    header_font = Font(name='宋体',bold=True)
+    header_font = Font(name='微软雅黑',bold=False)
     title_height = 30
 
     sheet.column_dimensions['A'].width = 12

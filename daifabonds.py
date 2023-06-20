@@ -1,6 +1,4 @@
 import requests
-import csv
-import re
 import json
 from datetime import datetime
 from openpyxl import Workbook

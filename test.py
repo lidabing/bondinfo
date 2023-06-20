@@ -1,28 +1,44 @@
-from datetime import datetime, date
+data = '''000810|创维数字|14.82|正式邀约报告书
+002644|佛慈制药|9.6|出摘要两个月
+600282|南钢股份|3.69|民事诉讼
+600449|宁夏建材|12.59|最新公告重组方案
+000830|鲁西化工|12.76|合并实施被暂停
+600729|重庆百货|19.49|29.72'''
 
-def compare_to_today(date_str):
-    # 将日期字符串转换为 datetime 对象
-    date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+lines = data.split('\n')  # 按行分割数据
 
-    # 获取当前日期
-    today = date.today()
+for line in lines:
+    fields = line.split('|')  # 按竖线分割字段
+    if len(fields) >= 4:
+        stock_code = fields[0]
+        stock_name = fields[1]
+        stock_price = fields[2]
+        stock_info = fields[3]
+        
+        print(f"股票代码: {stock_code}")
+        print(f"股票名称: {stock_name}")
+        print(f"要约价格: {stock_price}")
+        print(f"要约阶段: {stock_info}")
+        print()
 
-    if date_obj.date() > today:
-        return "今天之后"
-    elif date_obj.date() < today:
-        return "今天之前"
-    else:
-        return "今天"
 
-# 测试示例
-date1 = '2023-06-11'
-date2 = '2023-06-12'
-date3 = '2023-06-14'
+filename = "yaoyuedata.txt"  # 文件名
 
-result1 = compare_to_today(date1)
-result2 = compare_to_today(date2)
-result3 = compare_to_today(date3)
+with open(filename, "r", encoding="utf-8") as file:
+    data = file.read()  # 读取文件内容
 
-print(result1)  # 今天之后
-print(result2)  # 今天之前
-print(result3)  # 今天
+lines = data.split('\n')  # 按行分割数据
+
+for line in lines:
+    fields = line.split('|')  # 按竖线分割字段
+    if len(fields) >= 4:
+        stock_code = fields[0]
+        stock_name = fields[1]
+        stock_price = fields[2]
+        stock_info = fields[3]
+        
+        print(f"股票代码: {stock_code}")
+        print(f"股票名称: {stock_name}")
+        print(f"要约价格: {stock_price}")
+        print(f"要约阶段: {stock_info}")
+        print()
