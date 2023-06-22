@@ -8,17 +8,6 @@ from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
 
 
-headers = {"cookie": 'kbzw__Session=elbqk07dap4k0uqf4o5k6retg2; Hm_lvt_164fe01b1433a19b507595a43bf58262=1685855555; kbz_newcookie=1; kbzw__user_login=7Obd08_P1ebax9aXYOkFRiQHWB34VekdmrCW6c3q1e3Q6dvR1YzRl6iwrsqyzqmW18Sr2KjalaOXqbGooNrP3Mitltqpq5mcndbd3dPGpKWplKiXmLKgubXOvp-qq6GupKyXrZiomK6ltrG_0aTC2PPV487XkKylo5iJx8ri3eTg7IzFtpaSp6Wjs4HHyuKvqaSZ5K2Wn4G45-PkxsfG1sTe3aihqpmklK2Xm8OpxK7ApZXV4tfcgr3G2uLioYGzyebo4s6onaiVpJGlp6GogcPC2trn0qihqpmklK0.; Hm_lpvt_164fe01b1433a19b507595a43bf58262=1685884076'}
-
-
-def find_content_by_id(target_id):
-    with open('backup.txt', 'r', encoding='utf-8') as file:
-        for line in file:
-            line = line.strip()
-            if line.startswith(target_id):
-                content = line.split('|', 1)[-1].strip()
-                return content
-    return None
 
 
 def fetch_all_convertible_bonds():

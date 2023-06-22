@@ -9,15 +9,19 @@ from openpyxl.styles import PatternFill
 from enum import Enum
 import re
 from datetime import datetime
+from common import *
+
 
 
 # 获取一些常用属性
-headers = {"cookie": 'kbzw__Session=elbqk07dap4k0uqf4o5k6retg2; Hm_lvt_164fe01b1433a19b507595a43bf58262=1685855555; kbz_newcookie=1; kbzw__user_login=7Obd08_P1ebax9aXYOkFRiQHWB34VekdmrCW6c3q1e3Q6dvR1YzRl6iwrsqyzqmW18Sr2KjalaOXqbGooNrP3Mitltqpq5mcndbd3dPGpKWplKiXmLKgubXOvp-qq6GupKyXrZiomK6ltrG_0aTC2PPV487XkKylo5iJx8ri3eTg7IzFtpaSp6Wjs4HHyuKvqaSZ5K2Wn4G45-PkxsfG1sTe3aihqpmklK2Xm8OpxK7ApZXV4tfcgr3G2uLioYGzyebo4s6onaiVpJGlp6GogcPC2trn0qihqpmklK0.; Hm_lpvt_164fe01b1433a19b507595a43bf58262=1685884076'}
 def fetch_all_convertible_bonds():
+    request_headers_file = 'request_headers.txt'
+    # 读取文件内容
+    request_headers = read_jisilu_request_headers_file(request_headers_file)
     url = "https://www.jisilu.cn/webapi/cb/adjust/"
 
     # 发起 HTTP GET 请求
-    response = requests.get(url,headers=headers)
+    response = requests.get(url,headers=request_headers)
 
     if response.status_code == 200:
         data = response.json()
@@ -26,11 +30,6 @@ def fetch_all_convertible_bonds():
         print(f"请求失败，状态码: {response.status_code}")
         return []
 
-def find_property_value(data, bond_id, property_name):
-    for bond_data in data:
-        if bond_data["bond_id"] == bond_id:
-            return bond_data.get(property_name)
-    return None
 
 ### 通用的转债数据，在这里，主要用来获取溢价率的
 all_bonds_data = fetch_all_convertible_bonds()
@@ -57,20 +56,6 @@ def get_redeem_status(string):
     else:
         return RedeemStatus.NOT_REDEEM_CONDITION #还没有达到强赎条件
 
-def separate_numbers(string):
-    number = re.findall(r'\d+', string)
-    return number
-
-def is_integer(variable):
-    if isinstance(variable, int):
-        return True
-    elif isinstance(variable, str):
-        return variable.isdigit()
-    else:
-        return False
-
-def is_number(value):
-    return isinstance(value, (int, float, complex))
 
 url = "https://www.jisilu.cn/webapi/cb/redeem/"
 
@@ -268,8 +253,8 @@ if response.status_code == 200:
          
 
     # 保存工作簿
-    redeem_file = datetime.now().strftime("强赎转债列表-%Y年%m月%d日.xlsx")
-    workbook.save(redeem_file)
+    list_file = get_file_path("强赎转债列表.xlsx")
+    workbook.save(list_file)
 
 else:
     print("请求失败，状态码为:", response.status_code)

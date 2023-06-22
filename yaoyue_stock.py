@@ -6,15 +6,9 @@ from openpyxl.styles import Font, Color
 from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
 from datetime import datetime, timedelta
+from common import *
 
-def is_integer(variable):
-    if isinstance(variable, int):
-        return True
-    elif isinstance(variable, str):
-        return variable.isdigit()
-    else:
-        return False
-    
+
 def convert_stock_price(price_str):
     try:
         price = float(price_str.replace(',', '').replace('%', ''))
@@ -44,11 +38,6 @@ def get_stock_price(stock_code):
         print(f"Failed to get stock price for {stock_code}: {e}")
         return None
     
-
-
-yaoyue_code =['sz000810','sz002644','sh600282','sh600449','sz000830','sh600729']
-
-
 
 
 excel_header =   ['代码','名称','邀约价','收盘价','阶段','备注']
@@ -121,8 +110,8 @@ for row in sheet.iter_rows(min_row=1, max_row=8, min_col=1, max_col=6):
         cell.alignment = Alignment(horizontal='center', vertical='center',wrap_text=True)
 
 
-yaoyue_list_file = datetime.now().strftime("要约股信息-%Y年%m月%d日.xlsx")
-workbook.save(yaoyue_list_file)
+list_file = get_file_path("要约股信息.xlsx")
+workbook.save(list_file)
 
 
     

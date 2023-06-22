@@ -1,34 +1,17 @@
 import requests
-import re
-import json
 from datetime import datetime
 from openpyxl import Workbook
 from openpyxl.styles import Font, Color
 from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
-
-def read_file(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        content = file.read()
-        data = json.loads(content)
-    return data
+from common import *
 
 request_headers_file = 'request_headers.txt'
 # 读取文件内容
-request_headers = read_file(request_headers_file)
+request_headers = read_jisilu_request_headers_file(request_headers_file)
 
 # 输出文件内容
 print(request_headers)
-
-def find_content_by_id(target_id):
-    with open('backup.txt', 'r', encoding='utf-8') as file:
-        for line in file:
-            line = line.strip()
-            if line.startswith(target_id):
-                content = line.split('|', 1)[-1].strip()
-                return content
-    return None
-
 
 def fetch_all_convertible_bonds():
     url = "https://www.jisilu.cn/webapi/cb/adjust/"
@@ -42,41 +25,6 @@ def fetch_all_convertible_bonds():
     else:
         print(f"请求失败，状态码: {response.status_code}")
         return []
-
-def find_property_value(data, bond_id, property_name):
-    for bond_data in data:
-        if bond_data["bond_id"] == bond_id:
-            return bond_data.get(property_name)
-    return None
-
-def find_backup_by_bond_id(bond_id, backup_data):
-    for item in backup_data:
-        if item['bond_id'] == bond_id:
-            return item['backup']
-    return None
-
-#辅助函数
-def parse_adjust_string(s):
-    if(s == None):
-        return None
-    pattern = r"([\d]+)/([\d]+) \| ([\d]+)"
-    match_obj = re.match(pattern, s)
-    if match_obj:
-        num1, num2, num3 = map(int, match_obj.groups())
-        return num1, num2, num3
-    else:
-        return None
-
-def is_number(value):
-    return isinstance(value, (int, float, complex))
-
-def is_integer(variable):
-    if isinstance(variable, int):
-        return True
-    elif isinstance(variable, str):
-        return variable.isdigit()
-    else:
-        return False
 
 # 抓取所有转债数据
 all_bonds_data = fetch_all_convertible_bonds()
@@ -137,7 +85,7 @@ for bond_data in all_bonds_data:
     premium_rt = premium_rt/100.00
     #premium_rt_str =  str(premium_rt) + '%'
     readjust_dt = find_property_value(all_bonds_data,bond_code, 'readjust_dt')
-    bond_backup = find_content_by_id(bond_id)
+    bond_backup = find_backup_content_by_id(bond_id)
     item = [bond_nm,int(bond_id),price,premium_rt,adjust_count,bond_backup]
     sheet.append(item)
     #如果只剩下3天了，那么标红，做醒目处理
@@ -176,13 +124,11 @@ for cell in sheet['F']:
     sheet[pos].font = backup_font
     #sheet[pos].alignment = Alignment(wrap_text=True)
              
-    
-
 #设置居中
 # TOdo自动调整宽度
 for row in sheet.iter_rows(min_row=1, max_row=44, min_col=1, max_col=6):
     for cell in row:
         cell.alignment = Alignment(horizontal='center', vertical='center',wrap_text=True)
 # 保存工作簿
-adjust_list_file = datetime.now().strftime("即将下修转债列表-%Y年%m月%d日.xlsx")
+adjust_list_file = get_file_path("即将下修转债列表.xlsx")
 workbook.save(adjust_list_file)

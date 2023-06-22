@@ -1,35 +1,15 @@
 import requests
-import json
 from datetime import datetime
 from openpyxl import Workbook
 from openpyxl.styles import Font, Color
 from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
+from common import *
 
-def compare_dates(date1_str, date2_str):
-    # 将日期字符串转换为日期对象
-    date1 = datetime.strptime(date1_str, '%Y-%m-%d').date()
-    date2 = datetime.strptime(date2_str, '%Y-%m-%d').date()
-
-    return date1 >= date2
-
-def is_integer(variable):
-    if isinstance(variable, int):
-        return True
-    elif isinstance(variable, str):
-        return variable.isdigit()
-    else:
-        return False
-
-def read_file(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        content = file.read()
-        data = json.loads(content)
-    return data
 
 request_headers_file = 'request_headers.txt'
 # 读取文件内容
-request_headers = read_file(request_headers_file)
+request_headers = read_jisilu_request_headers_file(request_headers_file)
 
 def fetch_all_convertible_bonds():
     url = "https://www.jisilu.cn/webapi/cb/pre/?history=N"
@@ -44,28 +24,6 @@ def fetch_all_convertible_bonds():
         print(f"请求失败，状态码: {response.status_code}")
         return []
 
-
-def find_property_value(data, bond_id, property_name):
-    for bond_data in data:
-        if bond_data["bond_id"] == bond_id:
-            return bond_data.get(property_name)
-    return None
-
-def extract_date_info(date_str):
-    if date_str is None:
-        return None
-
-    if not date_str:
-        return None
-
-    try:
-        date = datetime.strptime(date_str, '%Y-%m-%d')
-        year = date.year
-        month = date.month
-        day = date.day
-        return year, month, day
-    except ValueError:
-        return None
 
 # 抓取所有转债数据
 all_bonds_data = fetch_all_convertible_bonds()
@@ -143,5 +101,5 @@ for cell in sheet['D']:
     if(is_integer(sheet[pos].value)):
         cell.font = blue_font
 
-list_file = datetime.now().strftime("待发行转债列表-%Y年%m月%d日.xlsx")
+list_file = get_file_path("待发行转债列表.xlsx")
 workbook.save(list_file)
