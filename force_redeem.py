@@ -70,6 +70,8 @@ redeem_condition_header = ['转债名称','转债代码','收盘价','溢价率'
 redeem_notice_header = ['转债名称','转债代码','收盘价','溢价率','最后交易日','最后转股日']
 expriry_bond_header = ['转债名称','转债代码','收盘价','溢价率','最后交易日','最后转股日']
 
+select_stocks=[]
+
 # 检查请求是否成功
 if response.status_code == 200:
     # 解析JSON响应

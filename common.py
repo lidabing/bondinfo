@@ -157,3 +157,9 @@ def is_within_10_days(date_str):
         return True
     else:
         return False
+    
+
+def write_array_to_file(array, file_path):
+    with open(file_path, 'w') as file:
+        for item in array:
+            file.write(str(item) + '\n')

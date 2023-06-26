@@ -68,7 +68,7 @@ for cell in sheet[2]:
 for bond_data in all_bonds_data:
     record_dt = bond_data["record_dt"]
     apply_date = bond_data["apply_date"]
-    if extract_date_info(record_dt) != None and compare_dates(apply_date,'2023-06-15'):
+    if extract_date_info(record_dt) != None and compare_dates(apply_date,'2023-06-25'):
         print(record_dt)
         bond_nm = bond_data["bond_nm"]
         bond_id = int(bond_data["bond_id"])
