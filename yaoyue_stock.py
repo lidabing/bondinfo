@@ -53,11 +53,11 @@ header_fill = PatternFill(fill_type='solid', fgColor='f2f2f2')
 workbook = Workbook()
 sheet = workbook.active
 sheet.merge_cells('A1:F1')
-sheet['A1'] = '下修重算日即将到期转债'
+sheet['A1'] = '要约收购和吸收合并信息列表'
 sheet['A1'].font = title_font
 sheet.row_dimensions[1].height = 22
 sheet.column_dimensions['A'].width = 12
-sheet.column_dimensions['E'].width = 20
+sheet.column_dimensions['E'].width = 40
 #sheet.column_dimensions['F'].width = 14
 #sheet.column_dimensions['G'].width = 20
 
@@ -102,6 +102,12 @@ for cell in sheet['A']:
     print(sheet[pos].value)
     if(is_integer(sheet[pos].value)):
         cell.font = blue_font
+
+#设置备注文字样式
+for cell in sheet['E']:
+    pos = 'E'+str(cell.row)
+    sheet[pos].font = backup_font
+    #sheet[pos].alignment = Alignment(wrap_text=True)
 
 #设置居中
 # TOdo自动调整宽度
