@@ -99,6 +99,28 @@ def create_data_directory():
     # 返回目录路径
     return date_dir
 
+def get_image_path():
+    # 获取当前文件所在目录的绝对路径
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # 获取当前日期
+    current_date = datetime.today().strftime("%Y-%m-%d")
+
+    # 构建数据目录路径
+    data_dir = os.path.join(current_dir, "data", current_date)
+
+    # 创建数据目录（如果不存在）
+    os.makedirs(data_dir, exist_ok=True)
+
+    # 构建数据目录路径
+    images_dir = os.path.join(data_dir, "images")
+
+    # 创建数据目录（如果不存在）
+    os.makedirs(images_dir, exist_ok=True)
+
+    # 返回文件路径
+    return images_dir
+
 def get_file_path(filename):
     # 获取当前文件所在目录的绝对路径
     current_dir = os.path.dirname(os.path.abspath(__file__))

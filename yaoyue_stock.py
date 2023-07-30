@@ -7,6 +7,7 @@ from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
 from datetime import datetime, timedelta
 from common import *
+import excel2img
 
 
 def convert_stock_price(price_str):
@@ -118,6 +119,8 @@ for row in sheet.iter_rows(min_row=1, max_row=8, min_col=1, max_col=6):
 
 list_file = get_file_path("要约股信息.xlsx")
 workbook.save(list_file)
+adjust_list_image_file = os.path.join(get_image_path(),'要约股信息.png')
+excel2img.export_img(list_file, adjust_list_image_file, "Sheet", None)
 
 
     

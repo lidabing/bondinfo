@@ -10,7 +10,7 @@ from enum import Enum
 import re
 from datetime import datetime
 from common import *
-
+import excel2img
 
 
 # 获取一些常用属性
@@ -257,6 +257,10 @@ if response.status_code == 200:
     # 保存工作簿
     list_file = get_file_path("强赎转债列表.xlsx")
     workbook.save(list_file)
+    adjust_list_image_file = os.path.join(get_image_path(),'强赎转债列表.png')
+    excel2img.export_img(list_file, adjust_list_image_file, "Sheet", None)
 
 else:
     print("请求失败，状态码为:", response.status_code)
+
+

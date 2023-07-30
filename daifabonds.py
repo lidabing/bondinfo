@@ -5,7 +5,7 @@ from openpyxl.styles import Font, Color
 from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
 from common import *
-
+import excel2img
 
 request_headers_file = 'request_headers.txt'
 # 读取文件内容
@@ -68,7 +68,7 @@ for cell in sheet[2]:
 for bond_data in all_bonds_data:
     record_dt = bond_data["record_dt"]
     apply_date = bond_data["apply_date"]
-    if extract_date_info(record_dt) != None and compare_dates(apply_date,'2023-06-25'):
+    if extract_date_info(record_dt) != None and compare_dates(apply_date,'2023-06-28'):
         print(record_dt)
         bond_nm = bond_data["bond_nm"]
         bond_id = int(bond_data["bond_id"])
@@ -103,3 +103,6 @@ for cell in sheet['D']:
 
 list_file = get_file_path("待发行转债列表.xlsx")
 workbook.save(list_file)
+
+adjust_list_image_file = os.path.join(get_image_path(),'待发行转债列表.png')
+excel2img.export_img(list_file, adjust_list_image_file, "Sheet", None)

@@ -5,6 +5,7 @@ from openpyxl.styles import Font, Color
 from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
 from common import *
+import excel2img
 
 request_headers_file = 'request_headers.txt'
 # 读取文件内容
@@ -140,3 +141,6 @@ write_array_to_file(select_stocks,stock_id_list_file)
 # 保存工作簿
 adjust_list_file = get_file_path("即将下修转债列表.xlsx")
 workbook.save(adjust_list_file)
+
+adjust_list_image_file = os.path.join(get_image_path(),'即将下修转债列表.png')
+excel2img.export_img(adjust_list_file, adjust_list_image_file, "Sheet", None)

@@ -5,6 +5,7 @@ from openpyxl.styles import Font, Color
 from openpyxl.styles import Alignment
 from openpyxl.styles import PatternFill
 from common import *
+import excel2img
 
 request_headers_file = 'request_headers.txt'
 # 读取文件内容
@@ -36,7 +37,7 @@ def is_past_time(date_string):
         return True
     try:
         input_time = datetime.strptime(date_string, "%Y-%m-%d")
-        return input_time < current_time
+        return input_time < current_time and input_time.date() != current_time.date()
     except ValueError:
         return False
 
@@ -164,3 +165,5 @@ for row in sheet.iter_rows(min_row=1, max_row=44, min_col=1, max_col=6):
 # 保存工作簿
 adjust_list_file = get_file_path("已经提议下修转债列表.xlsx")
 workbook.save(adjust_list_file)
+adjust_list_image_file = os.path.join(get_image_path(),'已经提议下修转债列表.png')
+excel2img.export_img(adjust_list_file, adjust_list_image_file, "Sheet", None)
