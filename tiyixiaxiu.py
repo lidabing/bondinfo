@@ -159,7 +159,7 @@ for cell in sheet['F']:
              
 #设置居中
 # TOdo自动调整宽度
-for row in sheet.iter_rows(min_row=1, max_row=44, min_col=1, max_col=6):
+for row in sheet.iter_rows(min_row=1, max_row=index, min_col=1, max_col=6):
     for cell in row:
         cell.alignment = Alignment(horizontal='center', vertical='center',wrap_text=True)
 # 保存工作簿
