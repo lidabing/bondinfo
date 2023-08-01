@@ -85,6 +85,7 @@ for cell in sheet[2]:
         cell.fill = header_fill
         cell.font = header_font
 index = 2
+tip_str='[今日决议下修]:'
 for bond_data in all_bonds_data:
     bond_code = bond_data["bond_id"]
     adjust_count = find_property_value(all_bonds_data,bond_code, 'adjust_count')
@@ -121,6 +122,9 @@ for bond_data in all_bonds_data:
     bond_backup = find_backup_content_by_id(bond_id)
     item = [bond_nm,int(bond_id),price,premium_rt,adjust_date,bond_backup]
     sheet.append(item)
+    if(is_same_day(adjust_date)):
+        tip_str +=bond_nm
+
     #如果只剩下3天了，那么标红，做醒目处理
     red_font  = Font(color='FF4500')  
     #if adjust[1]-adjust[0]<4:
@@ -167,3 +171,4 @@ adjust_list_file = get_file_path("已经提议下修转债列表.xlsx")
 workbook.save(adjust_list_file)
 adjust_list_image_file = os.path.join(get_image_path(),'已经提议下修转债列表.png')
 excel2img.export_img(adjust_list_file, adjust_list_image_file, "Sheet", None)
+append_reminder(tip_str)

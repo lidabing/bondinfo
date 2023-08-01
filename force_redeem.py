@@ -70,6 +70,12 @@ redeem_condition_header = ['转债名称','转债代码','收盘价','溢价率'
 redeem_notice_header = ['转债名称','转债代码','收盘价','溢价率','最后交易日','最后转股日']
 expriry_bond_header = ['转债名称','转债代码','收盘价','溢价率','最后交易日','最后转股日']
 
+
+will_redeem_tip= '[满足强赎条件]:'
+redeem_zuihoujiaoyi_tip = '[强赎转债最后交易日]:'
+redeem_zuihouzhuangu_tip = '[强赎转债最后转股日]:'
+bond_daoqi_tip = '[转债即将到期]:'
+
 select_stocks=[]
 
 # 检查请求是否成功
@@ -95,10 +101,14 @@ if response.status_code == 200:
         if status == RedeemStatus.NOT_REDEEM_CONDITION:  
             number = separate_numbers(redeem_status)
             compliance_days = int(number[0])#numbers[1]-numbers[0]
+            dif_days =  int(number[1])-  int(number[0])
             if compliance_days>5:
                 print("即将达到强赎条件")
                 cache = [item["bond_nm"],int(item["bond_id"]),item["price"],premium_rt,item["curr_iss_amt"],redeem_status]
-                not_redeem_condition.append(cache)            
+                not_redeem_condition.append(cache)
+                if(dif_days == 1):
+                    will_redeem_tip+=item["bond_nm"]
+
         elif status == RedeemStatus.REDEEM_CONDITION:
             cache = [item["bond_nm"],int(item["bond_id"]),item["price"],premium_rt,item["curr_iss_amt"],redeem_status]
             redeem_condition.append(cache)
@@ -107,10 +117,17 @@ if response.status_code == 200:
             print("发出强赎公告")
             cache = [item["bond_nm"],int(item["bond_id"]),item["price"],premium_rt,item["delist_dt"],item["last_convert_dt"]]
             redeem_notice.append(cache)
+            if(is_same_day(item["delist_dt"])):
+                redeem_zuihoujiaoyi_tip +=item["bond_nm"]
+            if(is_same_day(item["last_convert_dt"])):
+                redeem_zuihoujiaoyi_tip +=item["bond_nm"]
+
         elif status == RedeemStatus.EXPIRING_BOND:
             print("转债即将到期")
             cache = [item["bond_nm"],int(item["bond_id"]),item["price"],premium_rt,item["delist_dt"],item["last_convert_dt"]]
             expriry_bond.append(cache)
+            #if(is_same_day(item["delist_dt"])):
+            #    bond_daoqi_tip
          
 
         #print("债券ID:", item["bond_id"])
@@ -259,6 +276,11 @@ if response.status_code == 200:
     workbook.save(list_file)
     adjust_list_image_file = os.path.join(get_image_path(),'强赎转债列表.png')
     excel2img.export_img(list_file, adjust_list_image_file, "Sheet", None)
+
+    append_reminder(will_redeem_tip)
+    append_reminder(redeem_zuihoujiaoyi_tip)
+    append_reminder(redeem_zuihouzhuangu_tip)
+    append_reminder(bond_daoqi_tip)
 
 else:
     print("请求失败，状态码为:", response.status_code)

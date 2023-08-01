@@ -1,8 +1,15 @@
 # 一次运行所有文件
 import subprocess
+from common import *
 
 def execute_python_file(file_path):
     subprocess.call(['python', file_path])
+
+
+#初始化
+create_data_directory()
+get_image_path()
+generate_reminder_file(get_reminder_file_path())
 
 # 在当前目录下执行另一个Python文件
 execute_python_file('adjust_bonds.py')

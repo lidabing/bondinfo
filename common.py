@@ -185,3 +185,40 @@ def write_array_to_file(array, file_path):
     with open(file_path, 'w') as file:
         for item in array:
             file.write(str(item) + '\n')
+
+
+#获取提醒文件路径
+def get_reminder_file_path():
+    return os.path.join(get_image_path(),'提醒内容.txt')
+
+#创建需要关注的文件内容
+def generate_reminder_file(file_path, content=""):
+    try:
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(content)
+        print(f"File generated successfully: {file_path}")
+    except Exception as e:
+        print(f"Error occurred while generating the file: {e}")
+
+#追加内容
+def append_reminder(text):
+    try:
+        file_path = get_reminder_file_path()
+        with open(file_path, 'a', encoding='utf-8') as file:
+            file.write(text + '\n')
+        print(f"Appended text '{text}' to the file: {file_path}")
+    except Exception as e:
+        print(f"Error occurred while appending text: {e}")
+
+
+def get_today_date():
+    today = datetime.now().strftime("%Y-%m-%d")
+    return today
+
+def is_same_day(date_string):
+    try:
+        input_date = datetime.strptime(date_string, "%Y-%m-%d").date()
+        today = datetime.now().date()
+        return input_date == today
+    except ValueError:
+        return False

@@ -65,10 +65,12 @@ for cell in sheet[2]:
         cell.font = header_font
 
 # 检查请求是否成功
+tip_str = '[新债申购]:'
 for bond_data in all_bonds_data:
     record_dt = bond_data["record_dt"]
     apply_date = bond_data["apply_date"]
-    if extract_date_info(record_dt) != None and compare_dates(apply_date,'2023-08-01'):
+
+    if extract_date_info(record_dt) != None and compare_dates(apply_date,get_today_date()):
         print(record_dt)
         bond_nm = bond_data["bond_nm"]
         bond_id = int(bond_data["bond_id"])
@@ -81,6 +83,8 @@ for bond_data in all_bonds_data:
         amount = bond_data["amount"]
         item = [bond_nm,bond_id,stock_nm,stock_id,apply_date,record_dt,cb_amount,apply10,amount]
         sheet.append(item)
+        if(apply_date == get_today_date()):
+            tip_str += bond_nm
 
 
 #设置居中
@@ -106,3 +110,5 @@ workbook.save(list_file)
 
 adjust_list_image_file = os.path.join(get_image_path(),'待发行转债列表.png')
 excel2img.export_img(list_file, adjust_list_image_file, "Sheet", None)
+
+append_reminder(tip_str)

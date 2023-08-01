@@ -59,6 +59,7 @@ for cell in sheet[2]:
         cell.font = header_font
 index = 2
 select_stocks=[]
+tip_str = "[即将满足下修条件]:"
 for bond_data in all_bonds_data:
     bond_code = bond_data["bond_id"]
     adjust_count = find_property_value(all_bonds_data,bond_code, 'adjust_count')
@@ -97,6 +98,8 @@ for bond_data in all_bonds_data:
     if adjust[1]-adjust[0]<4:
         pos = 'E'+str(index)
         sheet[pos].font = red_font
+        item_str = bond_nm + "(最少"+str(adjust[1]-adjust[0])+"天),"
+        tip_str = tip_str + item_str
 
 
     
@@ -144,3 +147,6 @@ workbook.save(adjust_list_file)
 
 adjust_list_image_file = os.path.join(get_image_path(),'即将下修转债列表.png')
 excel2img.export_img(adjust_list_file, adjust_list_image_file, "Sheet", None)
+
+append_reminder(tip_str)
+
