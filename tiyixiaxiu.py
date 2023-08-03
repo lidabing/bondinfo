@@ -123,7 +123,7 @@ for bond_data in all_bonds_data:
     item = [bond_nm,int(bond_id),price,premium_rt,adjust_date,bond_backup]
     sheet.append(item)
     if(is_same_day(adjust_date)):
-        tip_str +=bond_nm
+        tip_str +=bond_nm + ' '
 
     #如果只剩下3天了，那么标红，做醒目处理
     red_font  = Font(color='FF4500')  

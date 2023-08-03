@@ -50,7 +50,7 @@ sheet.row_dimensions[1].height = 22
 sheet.column_dimensions['A'].width = 12
 sheet.column_dimensions['E'].width = 14
 sheet.column_dimensions['F'].width = 14
-sheet.column_dimensions['G'].width = 20
+sheet.column_dimensions['G'].width = 30
 
 sheet.append(excel_header)
 for cell in sheet[2]:

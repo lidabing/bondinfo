@@ -65,7 +65,9 @@ for cell in sheet[2]:
         cell.font = header_font
 
 # 检查请求是否成功
-tip_str = '[新债申购]:'
+tip_shengou_str = '[新债申购日]:'
+tip_peishou_str = '[新债配售日]:'
+index = 2
 for bond_data in all_bonds_data:
     record_dt = bond_data["record_dt"]
     apply_date = bond_data["apply_date"]
@@ -82,13 +84,16 @@ for bond_data in all_bonds_data:
         apply10 =  bond_data["apply10"]
         amount = bond_data["amount"]
         item = [bond_nm,bond_id,stock_nm,stock_id,apply_date,record_dt,cb_amount,apply10,amount]
+        index = index+1
         sheet.append(item)
         if(apply_date == get_today_date()):
-            tip_str += bond_nm
+            tip_shengou_str += bond_nm + ' '
+        if(record_dt == get_today_date()):
+            tip_peishou_str += bond_nm+' '
 
 
 #设置居中
-for row in sheet.iter_rows(min_row=1, max_row=3, min_col=1, max_col=9):
+for row in sheet.iter_rows(min_row=1, max_row=index, min_col=1, max_col=9):
     for cell in row:
         cell.alignment = Alignment(horizontal='center', vertical='center')
 
@@ -111,4 +116,5 @@ workbook.save(list_file)
 adjust_list_image_file = os.path.join(get_image_path(),'待发行转债列表.png')
 excel2img.export_img(list_file, adjust_list_image_file, "Sheet", None)
 
-append_reminder(tip_str)
+append_reminder(tip_shengou_str)
+append_reminder(tip_peishou_str)
