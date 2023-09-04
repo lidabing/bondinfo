@@ -18,3 +18,9 @@ execute_python_file('force_redeem.py')
 execute_python_file('readjust_dt_list.py')
 execute_python_file('yaoyue_stock.py')
 execute_python_file('tiyixiaxiu.py')
+
+#获取夜盘数据
+append_reminder('[隔夜数据]')
+execute_python_file('usdrmb.py')
+execute_python_file('cha50cfd.py')
+execute_python_file('kweb.py')
