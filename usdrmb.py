@@ -43,17 +43,17 @@ def get_historical_exchange_rates():
 
 def convert_sign(a, b):
     if b.startswith('-'):
-        return f"隔夜人民币兑美元汇率报{a}（RMB涨+{b[1:]}%)"
+        return f"隔夜人民币兑美元汇率报{a}(RMB涨+{b[1:]}%)"
     elif b.startswith('+'):
-        return f"隔夜人民币兑美元汇率报{a}（RMB跌-{b[1:]}%)"
+        return f"隔夜人民币兑美元汇率报{a}(RMB跌-{b[1:]}%)"
     else:
-        return f"隔夜人民币兑美元汇率报{a}（RMB{b}%)"
+        return f"隔夜人民币兑美元汇率报{a}(RMB{b}%)"
 
 if __name__ == "__main__":
     result = get_historical_exchange_rates()
     if result is not None:
         yesterday_change, current_exchange_rate = result
-        f"隔夜人民币兑美元汇率报{current_exchange_rate}（RMB涨+0.31)"
+        f"隔夜人民币兑美元汇率报{current_exchange_rate}(RMB涨+0.31)"
 
         #print(f"昨日涨跌幅：{yesterday_change:.2f}%")
         print(f"当前汇率：{current_exchange_rate}") 
