@@ -29,13 +29,13 @@ header_fill = PatternFill(fill_type='solid', fgColor='f2f2f2')
 # 创建一个新的工作簿
 workbook = Workbook()
 sheet = workbook.active
-sheet.merge_cells('A1:F1')
+sheet.merge_cells('A1:H1')
 sheet['A1'] = '下修重算日即将到期转债'
 sheet['A1'].font = title_font
 sheet.row_dimensions[1].height = 22
 sheet.column_dimensions['A'].width = 12
 sheet.column_dimensions['E'].width = 14
-sheet.column_dimensions['F'].width = 14
+sheet.column_dimensions['F'].width = 8
 sheet.column_dimensions['H'].width = 20
 
 sheet.append(excel_header)
@@ -68,6 +68,10 @@ for bond_data in adjust_bonds:
         red_font  = Font(color='FF4500')  
         if is_within_10_days(readjust_dt):
             pos = 'E'+str(index)
+            sheet[pos].font = red_font
+        #如果到期收益率是正的，那么标红，做醒目处理
+        if ytm_rt>0:
+            pos = 'F'+str(index)
             sheet[pos].font = red_font
 
 
